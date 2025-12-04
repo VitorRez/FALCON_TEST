@@ -27,6 +27,7 @@ def merge_fft(f_list_fft):
 
 # calcula a fft de um polinomio mod (x^n + 1)
 def fft(f):
+    #print(f"poli = {f}, len = {len(f)}")
     n = len(f)
 
     if n > 2:
@@ -44,6 +45,7 @@ def fft(f):
 
 # calcula a fft inversa de um polinomio mod (x^n + 1)
 def ifft(f_fft):
+    #print(f"i poli = {f_fft}, len = {len(f_fft)}")
     n = len(f_fft)
 
     if (n > 2):
@@ -90,22 +92,22 @@ def sub(f, g):
     n = len(f)
     return [f[i] - g[i] for i in range(n)]
 
+# 
 def adj_fft(f_fft):
     """Ajoint of a polynomial (FFT representation)."""
     deg = len(f_fft)
     return [f_fft[i].conjugate() for i in range(deg)]
 
+# soma dois polinomios
 def adj(f):
-    """Ajoint of a polynomial (coefficient representation)."""
     return ifft(adj_fft(fft(f)))
 
+# soma dois polinomios na fft
 def add_fft(f_fft, g_fft):
-    """Addition of two polynomials (FFT representation)."""
     return add(f_fft, g_fft)
 
-
+# subtrai dois polinomios na fft
 def sub_fft(f_fft, g_fft):
-    """Substraction of two polynomials (FFT representation)."""
     return sub(f_fft, g_fft)
 
 # razão entre:
