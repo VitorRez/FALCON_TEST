@@ -1,4 +1,4 @@
-from NTRUSolve import *
+from ntrugen import *
 from fft import *
 
 p = gen_poly(8)

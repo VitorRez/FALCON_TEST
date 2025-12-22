@@ -1,6 +1,7 @@
 from common import sqnorm
 from samplerz import samplerz
 from fft import *
+from ntt import *
 
 q = 12 * 1024 + 1
 
@@ -132,7 +133,7 @@ def gen_poly(N):
         f[i] = sum(f0[i * k + j] for j in range(k))
     return f
 
-def NTRUSolve(f, g):
+def ntru_solve(f, g):
     print(f"F = {f}, G = {g}")
     n = len(f)
     if n == 1:
@@ -146,11 +147,39 @@ def NTRUSolve(f, g):
     else:
         fp = field_norm(f)
         gp = field_norm(g)
-        Fp, Gp = NTRUSolve(fp, gp)
+        Fp, Gp = ntru_solve(fp, gp)
         F = mult_mod(lift(Fp), galois_conjugate(g))
         G = mult_mod(lift(Gp), galois_conjugate(f))
         F, G = reduce(f, g, F, G)
         return F, G
+
+# Calcula a norma quadrada de Gram-Schmidt da matriz do NTRU gerada por f e g
+def gs_norm(f, g, q):
+    sqnorm_fg = sqnorm([f, g])
+    ffgg = add(mul(f, adj(f)), mul(g, adj(g)))
+    Ft = div(adj(g), ffgg)
+    Gt = div(adj(f), ffgg)
+    sqnorm_FG = (q ** 2) * sqnorm([Ft, Gt])
+    return max(sqnorm_fg, sqnorm_FG)
+
+# Gera os polinomios f, g, F e G satisfazendo a equação do NTRU
+def ntru_gen(n):
+    while True:
+        f = gen_poly(n)
+        g = gen_poly(n)
+        if gs_norm(f, g, q) > (1.17 ** 2) * q:
+            continue
+        f_ntt = ntt(f)
+        if any((elem == 0) for elem in f_ntt):
+            continue
+        try:
+            F, G = ntru_solve(f, g)
+            F = [int(coef) for coef in F]
+            G = [int(coef) for coef in G]
+            return f, g, F, G
+
+        except ValueError:
+            continue
     
 def main():
     N = 4
@@ -162,7 +191,7 @@ def main():
         print(f"\n\nInicio: f = {f}, g = {g}\n\n")
 
         try:
-            F, G = NTRUSolve(f, g)
+            F, G = ntru_solve(f, g)
             print(f"\n\nFinal: F = {F}, G = {G}")
             return
         
