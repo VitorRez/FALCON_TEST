@@ -24,3 +24,4 @@ def sqnorm(f):
         for coef in i:
             norm += coef ** 2
     return norm
+

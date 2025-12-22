@@ -110,6 +110,13 @@ def add_fft(f_fft, g_fft):
 def sub_fft(f_fft, g_fft):
     return sub(f_fft, g_fft)
 
+# multiplica um polinomio por um escalar k modulo m
+def scalar_mul(f, k, m):
+    return [(k*i) % m for i in f]
+
+def poly_mod(a, m):
+    return [x % m for x in a]
+
 # razão entre:
 #   * O grau de n
 #   * o número de coeficientes complexos da ntt
