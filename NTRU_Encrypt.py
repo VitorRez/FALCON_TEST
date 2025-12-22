@@ -9,7 +9,7 @@ class NTRUEncrypt:
         self.f, self.g, self.F, self.G = ntru_gen(self.N)
         self.h = div_zq(self.g, self.f)
 
-    def encrypt()
+    def encrypt(self):
     
 x = NTRUEncrypt(1024)
 x.generate_random_keys()
